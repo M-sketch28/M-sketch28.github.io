@@ -7,24 +7,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script type="importmap"> {
+        "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js", 
+        "three/addons/" : "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+    
     <title>Palais mental</title>
+
 </head>
 
 <body>
-    <div id="scene"></div>
+    <main id="palais">
+        <div id="scene"></div>
 
         <section id="interface">
 
-        <h1>Le Vestibule</h1>
+            <h1>Le Vestibule</h1>
 
-        <p>Bienvenue dans ton palais</p>
+            <p>Bienvenue dans ton palais</p>
 
-        <p class="indication">
-        Exploration des lieux et des portes
-        </p>
+            <p class="indication">
+            Exploration des lieux et des portes
+            </p>
 
-    </section>
-    
+        </section>
+    </main>
+
     <script type="module" src="script.js"></script>
 
 </body>
