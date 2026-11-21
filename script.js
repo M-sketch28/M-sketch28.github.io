@@ -10,24 +10,24 @@ console.log("NOUVELLE VERSION DU SCRIPT");
 
 
 // 1. Création de la scène
-const scene = new THREE.Scene();
+const scene = new THREE.Scene(); //crée une nouvelle scène.
 
-scene.background = new THREE.Color(0xD3D3D3);
-scene.fog = new THREE.Fog(0xD3D3D3, 12, 57);
+scene.background = new THREE.Color(0xD3D3D3); //définit sa couleur de fond
+scene.fog = new THREE.Fog(0xD3D3D3, 12, 57);//ajoute du brouillard pour donner une impression de profondeur
 
 
 
 
 // 2. Création de la caméra
 const camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
+    60, //Champ de vision (FOV), en degrés
+    window.innerWidth / window.innerHeight, //Rapport largeur/hauteur de l'écran
     0.1,
-    1000
+    1000 //Distance maximale visible
 );
 camera.position.set(0, 1.5, 8);
 const pointRegard = new THREE.Vector3(0, 1.5, -15);//stokcer les 3 coordonnées du point d'où regarde la caméra
-camera.lookAt(pointRegard);
+camera.lookAt(pointRegard);// oriente la caméra vers ce point
 
 document.addEventListener("keydown", function(event) {//keydown détecte lorsqu'une touche est enfoncée
     //AVANCER
@@ -62,14 +62,14 @@ document.addEventListener("keydown", function(event) {//keydown détecte lorsqu'
 
 
 // 3. Création du moteur graphique
-const renderer = new THREE.WebGLRenderer({ //transforme ce que vois la caméra en image à afficher dansle navigateur
-    antialias: true
+const renderer = new THREE.WebGLRenderer({ //transforme ce que vois la caméra en image à afficher dans le navigateur / new THREE.WebGLRenderer() crée le moteur de rendu.
+    antialias: true // rend les contours moins pixelisés
 });
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 const environnement = new RoomEnvironment(); // Création d'une pièce virtuelle
 const environnementMap = pmremGenerator.fromScene(environnement);//trnasforme notre environnment en une texture adaptée aux matériaux physiques
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight);// Définit la taille du rendu selon la largeur et la hauteur de la fenêtre
 
 const composer = new EffectComposer(renderer);// new : crée une istance de la classe EffectComposer EffectComposer: utiliser renderer(moteur de rendu)
 const renderPass = new RenderPass(scene, camera); // prépare le rendu de notre scène depuis le point de la caméra, a besoin d'une scène pour observer
@@ -82,17 +82,17 @@ const bloomPass = new UnrealBloomPass(
 );
 composer.addPass(bloomPass);
 
-document.querySelector("#scene").appendChild(renderer.domElement);
+document.querySelector("#scene").appendChild(renderer.domElement); //récupère l'élément HTML qui possède l'identifiant scene / renderer.domElement représente le canvas HTML créé par Three.js / appendChild() insère ce canvas dans #scene
 
 
 
 // 5. Éclairage
-const lumiereAmbiante = new THREE.AmbientLight(0xffffff, 1.5); //f07167
+const lumiereAmbiante = new THREE.AmbientLight(0xffffff, 1.5); //lumière ambiante de la scène avec sa couleur et son intensité
 scene.add(lumiereAmbiante);
 
-const lumiere = new THREE.DirectionalLight(0xffffff, 1);
-lumiere.position.set(5, 10, 5);
-scene.add(lumiere);
+const lumiere = new THREE.DirectionalLight(0xffffff, 1);// lumière directionelle éclaire unendroit en particulier
+lumiere.position.set(5, 10, 5);// positiond e la lumière
+scene.add(lumiere); //ajout de la lumière à la scène
 
 
 
@@ -134,7 +134,7 @@ document.addEventListener("keyup", function(event) {
 });
 const horloge = new THREE.Clock();//horloge pour mesurer le temps écoulé
 function animer() {
-    requestAnimationFrame(animer); // demande au navigateur de rapeler la fonction
+    requestAnimationFrame(animer); // demande au navigateur de rapeler la fonction animer pour produirel'image suivante
 
    // TEMPS ECOULE
 const delta = horloge.getDelta();
@@ -199,14 +199,14 @@ camera.lookAt(pointRegard);
     }
 
 
-    composer.render();//affiche la scène
+    composer.render();//affiche l'image actuelle
 }
 
 
 
 //CRÉATION DES FRAGMENTS
 //Matière du fragment
-const fragmentMaterial = new THREE.MeshPhysicalMaterial({
+const fragmentMaterial = new THREE.MeshPhysicalMaterial({// apparence fragment
     color: 0xe5f2ff, // couleur du fragment
     roughness: 0.02, //rend la surface du fragment plus lisse, reflets plus nets
     metalness: 0, // rend le fragment métallique
@@ -223,8 +223,8 @@ const edgesMaterial = new THREE.LineBasicMaterial({
 
 function creerFragment(parent = scene){
 
-    // 7. Creéation du premier fragment
-    const fragmentGeometry = new THREE.IcosahedronGeometry(0.8, 0);// En premier le rayon en deuxième niveau de subdivision
+    // 7. Création du premier fragment
+    const fragmentGeometry = new THREE.IcosahedronGeometry(0.8, 0);// En premier le rayon en deuxième niveau de subdivision/ Base du fragment polyèdre, forme
 
     //Récupérer les sommets
     const positions = fragmentGeometry.attributes.position;
@@ -255,7 +255,7 @@ function creerFragment(parent = scene){
     fragmentGeometry.scale(0.5, 0.7, 0.70);// modifier la forme du fragment
     fragmentGeometry.computeVertexNormals(); //indiquent l'orientation des surfaces du fragment, calcule comment la lumière interagit avec chaque face
 
-    const fragment = new THREE.Mesh(
+    const fragment = new THREE.Mesh(// Mesh combine la géometry et le matériau
     fragmentGeometry,
     fragmentMaterial
     );
@@ -425,7 +425,7 @@ const loader = new GLTFLoader();
 let coeur = null;
 
 loader.load(
-    './models/human-heart-light.glb',
+    './Models/human-heart-light.glb',
 
     function(gltf) {
 
@@ -502,7 +502,7 @@ loader.load(
 let poumons = null;
 
 loader.load(
-    './models/human-lungs-light.glb',
+    './Models/human-lungs-light.glb',
 
     function(gltf) {
 
@@ -578,7 +578,7 @@ loader.load(
 let cerveau = null;
 
 loader.load(
-    './models/human-brain-light.glb',
+    './Models/human-brain-light.glb',
 
     function(gltf) {
 
@@ -654,7 +654,7 @@ loader.load(
 let squelette = null;
 
 loader.load(
-    './models/human-skeleton-light.glb',
+    './Models/human-skeleton-light.glb',
 
     function(gltf) {
 
@@ -729,7 +729,7 @@ loader.load(
 let digestif = null;
 
 loader.load(
-    './models/digestive.glb',
+    './Models/digestive.glb',
 
     function(gltf) {
 
@@ -1055,8 +1055,7 @@ function detecterClic(event){
 };
 window.addEventListener("click", detecterClic); //dit à ton navigateur d'appeler la fonction lorsqu'on clique
 
-
-
+//ajoute à la scène les éléments dy corps
 scene.add(espaceCorps);
 
 animer();
