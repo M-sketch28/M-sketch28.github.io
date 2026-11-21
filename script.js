@@ -7,118 +7,15 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // import pour le coeur humain
 console.log("NOUVELLE VERSION DU SCRIPT");
 
+
+
 // 1. Création de la scène
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0xD3D3D3);
 scene.fog = new THREE.Fog(0xD3D3D3, 12, 57);
 
-//Géometrie deu pilier
-const pilierGeometry = new THREE.BoxGeometry(2.5, 30, 2.5);
 
-//matériau du pilier
-const pilierMaterial = new THREE.MeshStandardMaterial({
-    color : 0x777777,
-    roughness : 0.8
-});
-
-const pilier = new THREE.Mesh(
-    pilierGeometry,
-    pilierMaterial
-);
-pilier.position.set(-9, 16, 0);
-const pilier2 = pilier.clone();
-const pilier3 = pilier.clone();
-const pilier4 = pilier.clone();
-const pilier5 = pilier.clone();
-const pilier6 = pilier.clone();
-
-pilier2.position.set(9, 16, 0);
-pilier3.position.set(11, 19, -9);
-pilier4.position.set(-11, 19, -9);
-pilier5.position.set(11, 23, -20);
-pilier6.position.set(-11, 23, -20);
-
-scene.add(pilier);
-scene.add(pilier2);
-scene.add(pilier3);
-scene.add(pilier4);
-scene.add(pilier5);
-scene.add(pilier6);
-
-
-// Création d'une ruine composée de plusieurs blocs
-
-function creerRuine(){
-
-    // Conteneur qui rassemble tous les morceaux
-    const ruine = new THREE.Group();
-
-    // Matériau commun aux morceaux
-    const ruineMaterial = new THREE.MeshStandardMaterial({
-        color: 0x77818a,
-        roughness: 0.75,
-        metalness: 0.2
-    });
-
-    // Fonction qui fabrique un morceau de la ruine
-    function ajouterBloc(largeur, hauteur, profondeur, x, y, z, rotationX, rotationZ){
-
-
-        const facteurBloc = 1.7 + Math.random() * 1.6;
-        const nouvelleLargeur = largeur * facteurBloc;
-        const nouvelleHauteur = hauteur * facteurBloc;
-        const nouvelleProfondeur = profondeur * facteurBloc;
-
-        const geometry = new THREE.BoxGeometry(
-            nouvelleLargeur,
-            nouvelleHauteur,
-            nouvelleProfondeur
-        );
-
-        const bloc = new THREE.Mesh(geometry, ruineMaterial);
-
-        bloc.position.set(x, y, z);
-
-        bloc.rotation.x = rotationX;
-        bloc.rotation.z = rotationZ;
-
-        ruine.add(bloc);
-    }
-
-    // Les différents morceaux de la ruine
-
-    // 1. Partie verticale principale
-    ajouterBloc(2, 8, 2, 0, 0, 0, 0, 0);
-
-    // 2. Partie supérieure légèrement inclinée
-    ajouterBloc(2, 3, 2, 0.5, 5, 0, 0.1, 0.15);
-
-    // 3. Dalle brisée sur le côté
-    ajouterBloc(4, 0.7, 2, -1.5, 3, 0, 0.1, 0.2);
-
-    // 4. Morceau détaché
-    ajouterBloc(1.5, 2, 1.5, 2.2, 4.5, 0.5, 0.2, -0.3);
-
-    // 5. Petit fragment supérieur
-    ajouterBloc(1.5, 1, 1.5, -1.5, 7, -0.5, 0.3, -0.2);
-
-    return ruine;
-}
-const ruines = [];
-
-for(let i = 0; i < 10; i++){
-    const ruine = creerRuine();// Référence à l'objet crée
-
-    ruine.position.set(
-        Math.random() * 40 - 20,
-        Math.random() * 40 + 3,
-        Math.random() * -40 - 30
-    );
-
-    ruines.push(ruine);
-    scene.add(ruine);
-}
 
 
 // 2. Création de la caméra
@@ -128,9 +25,41 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-
 camera.position.set(0, 1.5, 8);
-camera.lookAt(0, 1.5, 0);
+const pointRegard = new THREE.Vector3(0, 1.5, -15);//stokcer les 3 coordonnées du point d'où regarde la caméra
+camera.lookAt(pointRegard);
+
+document.addEventListener("keydown", function(event) {//keydown détecte lorsqu'une touche est enfoncée
+    //AVANCER
+    if (event.key === "ArrowUp") {//event.key permet de connaître la touche utilisée/ ArrowUp correspond à la flèche du haut
+
+        camera.position.z -= 1;
+        pointRegard.z -= 1;
+
+    }
+
+    // RECULER
+    if (event.key === "ArrowDown") {
+        camera.position.z += 1;
+        pointRegard.z += 1;
+    }
+
+    // ALLER À GAUCHE
+    if (event.key === "ArrowLeft") {
+        camera.position.x -= 1;
+        pointRegard.x -= 1;
+    }
+
+    // ALLER À DROITE
+    if (event.key === "ArrowRight") {
+        camera.position.x += 1;
+        pointRegard.x += 1;
+    }
+
+    camera.lookAt(pointRegard);
+
+});
+
 
 // 3. Création du moteur graphique
 const renderer = new THREE.WebGLRenderer({ //transforme ce que vois la caméra en image à afficher dansle navigateur
@@ -153,66 +82,94 @@ const bloomPass = new UnrealBloomPass(
 );
 composer.addPass(bloomPass);
 
-
-
 document.querySelector("#scene").appendChild(renderer.domElement);
 
-// Création d'une texture pour le sol
-const canvas = document.createElement("canvas");// Création d'un éléments canva qui va servir de toile pour la texture
-
-canvas.width = 512;//largeur
-canvas.height = 512;// hauteur
-
-const contexte = canvas.getContext("2d");// accès aux outils permettant de dessiner sur canva en deux dimensions
-
-const image = contexte.createImageData(512, 512);//Création d'une structure qui va contenir les informations couleurs de chaque pixels
-
-for(let i = 0; i < image.data.length; i += 4){// Boucle qui parcourt tous les pixels / image.data = tableau contenant les valeurs couleurs
-
-    const blanc = 230 + Math.random() * 15;//générer une nuance de blanc
-    //Atribution de la même couleur pour un sol gris
-    image.data[i] = blanc;
-    image.data[i + 1] = blanc;
-    image.data[i + 2] = blanc;
-
-    image.data[i + 3] = 255;
-}
-
-contexte.putImageData(image, 0, 0); //Permet d'appliquer les données à notre canva
-
-const solTexture = new THREE.CanvasTexture(canvas);//CanvasTexture transforme le canva en texture
-solTexture.colorSpace = THREE.SRGBColorSpace;// Adapte les couleurs à celui de notre image
-
-// 4. Création du sol
-const solGeometry = new THREE.PlaneGeometry(200, 200);
-
-const solMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    map: solTexture,
-    side: THREE.DoubleSide,
-    roughness: 0.70,
-    metalness: 0
-});
-
-const sol = new THREE.Mesh(solGeometry, solMaterial);
-
-sol.rotation.x = -Math.PI / 2;
-sol.position.y = -1;
-
-scene.add(sol);
 
 
 // 5. Éclairage
-const lumiereAmbiante = new THREE.AmbientLight(0xffffff, 1.6);
+const lumiereAmbiante = new THREE.AmbientLight(0xffffff, 1.5); //f07167
 scene.add(lumiereAmbiante);
 
 const lumiere = new THREE.DirectionalLight(0xffffff, 1);
 lumiere.position.set(5, 10, 5);
 scene.add(lumiere);
 
+
+
 // 6. Affichage de la scène
+
+// TOUCHES DE DEPLACEMENT
+
+const touches = {
+    haut: false,
+    bas: false,
+    gauche: false,
+    droite: false
+};
+// DETECTION DES TOUCHES ENFONCEES
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key.startsWith("Arrow")) {
+        event.preventDefault();
+    }
+
+    if (event.key === "ArrowUp") touches.haut = true;
+    if (event.key === "ArrowDown") touches.bas = true;
+    if (event.key === "ArrowLeft") touches.gauche = true;
+    if (event.key === "ArrowRight") touches.droite = true;
+
+});
+
+
+// DETECTION DES TOUCHES RELACHEES
+
+document.addEventListener("keyup", function(event) {
+
+    if (event.key === "ArrowUp") touches.haut = false;
+    if (event.key === "ArrowDown") touches.bas = false;
+    if (event.key === "ArrowLeft") touches.gauche = false;
+    if (event.key === "ArrowRight") touches.droite = false;
+
+});
+const horloge = new THREE.Clock();//horloge pour mesurer le temps écoulé
 function animer() {
     requestAnimationFrame(animer); // demande au navigateur de rapeler la fonction
+
+   // TEMPS ECOULE
+const delta = horloge.getDelta();
+
+// VITESSE DE DEPLACEMENT
+const vitesse = 20;
+
+// DISTANCE PARCOURUE
+const distance = vitesse * delta;
+
+
+// DEPLACEMENT DE LA CAMERA
+
+if (touches.haut) {
+    camera.position.z -= distance;
+    pointRegard.z -= distance;
+}
+
+if (touches.bas) {
+    camera.position.z += distance;
+    pointRegard.z += distance;
+}
+
+if (touches.gauche) {
+    camera.position.x -= distance;
+    pointRegard.x -= distance;
+}
+
+if (touches.droite) {
+    camera.position.x += distance;
+    pointRegard.x += distance;
+}
+
+camera.lookAt(pointRegard);
+
     //rotation des fragments
     for(const fragment of fragments){
         fragment.rotation[fragment.userData.axe] += fragment.userData.vitesse;
@@ -223,9 +180,31 @@ function animer() {
         coeur.rotation.y += 0.003; // fait tourner le coeur
     }
 
-    composer.render();//affcihe la scène
+    //rotation des poumons
+    if(poumons){
+        poumons.rotation.y += 0.003; //fait tourner les poumons
+    }
+
+     //rotation du cerveau
+    if(cerveau){
+        cerveau.rotation.y += 0.003; //fait tourner le cerveau
+    }
+
+    if(squelette){
+        squelette.rotation.y += 0.003; //fait toutrner le squelette
+    }
+
+    if(digestif){
+        digestif.rotation.y += 0.003; //fait tourner le système digestif
+    }
+
+
+    composer.render();//affiche la scène
 }
 
+
+
+//CRÉATION DES FRAGMENTS
 //Matière du fragment
 const fragmentMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xe5f2ff, // couleur du fragment
@@ -242,7 +221,7 @@ const edgesMaterial = new THREE.LineBasicMaterial({
     color: 0xFFFFFF
 });
 
-function creerFragment(){
+function creerFragment(parent = scene){
 
     // 7. Creéation du premier fragment
     const fragmentGeometry = new THREE.IcosahedronGeometry(0.8, 0);// En premier le rayon en deuxième niveau de subdivision
@@ -296,12 +275,12 @@ function creerFragment(){
     fragment.add(edges);
 
     fragment.position.set(
-        Math.random() * 15 - 5,
-        Math.random() * 7 + 1,
-        Math.random() * 9 - 5
+        Math.random() * 50 - 25,
+        Math.random() * 9 + 2,
+        Math.random() * 10 - 9
     );
    
-    scene.add(fragment);    // Ajout de l'objet fragment à la scene
+    parent.add(fragment);    // Ajout de l'objet fragment à la scene
 
     return fragment;
 }
@@ -310,7 +289,7 @@ fragmentMaterial.envMap = environnementMap.texture; // Association de l'objet en
 
 const fragments = [];
 
-for(let i = 0; i < 50; i++){
+for(let i = 0; i < 120; i++){
     const fragment = creerFragment();
     fragments.push(fragment); // Ajoute chaque fragment au tableau 
 
@@ -329,62 +308,19 @@ for(let i = 0; i < 50; i++){
 
 }
 
+//Creer les fragments au loin
 for(let i = 0; i < 60; i++){
     const fragment = creerFragment();// reférence vers l'objet crée
     fragment.scale.setScalar(0.35);
 
     fragment.position.set(
         Math.random() * 50 - 15,
-        Math.random() * 8 + 1,
+        Math.random() * 9 + 1,
         Math.random() * 10 - 25
     );
     fragments.push(fragment);
 }
-function creerPortail(){
-    const portail = new THREE.Group();
 
-    const positions = [
-    [-1, 1, 0.3],
-    [-1.5, 2, -0.3],
-    [-1.5, 3, 0.1],
-    [-1, 4, 0],
-    [0, 4.5, 0.5],
-    [1, 4, 0],
-    [1.5, 3, -0.1],
-    [1.5, 2, 0.4],
-    [1, 1, 0]
-    ];
-
-    for(let i = 0; i < positions.length; i++){
-        const fragment = creerFragment();
-
-        fragment.material = fragment.material.clone();// clone des matériaux fragment
-        fragment.material.emissive.set(0xff6961);// couleur le matériau semble émettre
-        fragment.material.emissiveIntensity = 0.4;// Intensité de l'émission lumineuse
-
-        fragment.position.set(
-            positions[i][0],
-            positions[i][1],
-            positions[i][2]
-        );
-
-        portail.add(fragment);
-    }
-    portail.position.set(0, -1, -5);
-
-    const lumierePortail = new THREE.PointLight(// Crée une lumière qui rayonne dans toutes les directions
-    0x8ADFFF, // Couleur bleu clair
-    5,        // Intensité
-    12        // Distance d'éclairage
-    );
-
-    lumierePortail.position.set(0, -1, -5);
-    portail.add(lumierePortail);
-
-    return portail;
-}
-const portail = creerPortail();
-scene.add(portail);
 
 
 
@@ -394,7 +330,6 @@ const espaceCorps = new THREE.Group();
 espaceCorps.name = "EspaceCorps";
 
 // SOL DE L'ESPACE DU CORPS
-
 
 function creerTextureMarbre() {
 
@@ -410,48 +345,6 @@ function creerTextureMarbre() {
     contexte.fillRect(0, 0, 1024, 1024);
 
     
-    // Veines principales
-    for (let i = 0; i < 40; i++) { //40 veines principales 
-
-        const departX = Math.random() * 1024;
-        const departY = Math.random() * 1024;
-
-        contexte.beginPath();
-        contexte.moveTo(departX, departY);
-
-        contexte.bezierCurveTo(
-            departX + Math.random() * 150 - 75,
-            departY + Math.random() * 150 - 75,
-            departX + Math.random() * 250 - 125,
-            departY + Math.random() * 250 - 125,
-            departX + Math.random() * 350 - 175,
-            departY + Math.random() * 350 - 175
-        );
-
-        contexte.strokeStyle = "rgba(150, 20, 35, 0.23)";
-        contexte.lineWidth = Math.random() * 2 + 1;
-        contexte.stroke();
-    }
-
-    // Fines ramifications
-    for (let i = 0; i < 25; i++) {//25 ramifications pour enrichir le motif 
-
-        contexte.beginPath();// dessine un trait 
-
-        const x = Math.random() * 1024;//choix d'une position aléatoire
-        const y = Math.random() * 1024;
-
-        contexte.moveTo(x, y);//definit le point de départ
-        contexte.lineTo(// indique où le trait doit se terminer.
-            x + Math.random() * 100 - 50,//choix aléatoire du lieu du trait
-            y + Math.random() * 100 - 50
-        );
-
-        contexte.strokeStyle = "rgba(150, 20, 35, 0.23)";// choix de la couleur, quantité de rouge 150, de vert 20, de bleu 35 et opavité 0.23
-        contexte.lineWidth = 1;//épaisseur du trait
-        contexte.stroke();// demande au navigateur de dessiner
-    }
-
     // Transformation du dessin en texture Three.js
     const texture = new THREE.CanvasTexture(canvas);//transforme notre image en texture utilisable par Three.js.
 
@@ -460,7 +353,7 @@ function creerTextureMarbre() {
     return texture;
 }
 
-const solCorpsGeometry = new THREE.PlaneGeometry(40, 40);//création de la forme du sol du corps
+const solCorpsGeometry = new THREE.PlaneGeometry(200, 200);//création de la forme du sol du corps
 
 const solCorpsMaterial = new THREE.MeshPhysicalMaterial({// physique du sol 
     map: creerTextureMarbre(),//map indique au matériau quelle image utiliser pour recouvrir sa surface.
@@ -489,7 +382,7 @@ espaceCorps.add(lumiereSol);
 espaceCorps.add(solCorps);
 
 
-// PREMIER PILIER
+// Ajout piliers du coeur
 
 const geometriePilier = new THREE.CylinderGeometry(
     0.18,  // Rayon du haut
@@ -525,6 +418,8 @@ espaceCorps.add(pilierCorps2);
 espaceCorps.add(pilierCorps3);
 espaceCorps.add(pilierCorps4);
 
+
+//CHARGEMENTS DES ORGANES
 // CHARGEMENT DU COEUR
 const loader = new GLTFLoader();
 let coeur = null;
@@ -539,9 +434,61 @@ loader.load(
         coeur.scale.set(30, 30, 30);
         coeur.position.set(0, 2, -5);
         coeur.rotation.y = 0;
+        rendreTranslucide(coeur,0xff3355);
 
         espaceCorps.add(coeur);
 
+        //CREATION DU GROUPE FRAGMENT COEUR
+        const groupeFragmentsCoeur = new THREE.Group();
+        coeur.add(groupeFragmentsCoeur)
+
+ 
+        for(let i = 0; i < 35; i++){
+            const fragment = creerFragment(groupeFragmentsCoeur);
+
+            fragment.material = fragmentMaterial.clone();//clone des matériaux fragment
+
+            if(i < 2){
+                // Fragments informatifs : turquoise
+                fragment.userData.informatif = true;
+                //FAITS CONTENUS DANS LES FRAGMENTS TURQUOISE
+                if (i === 0) {
+                    fragment.userData.fait = "Le cœur bat environ 100 000 fois par jour.";
+                } 
+                else {
+                    fragment.userData.fait = "Les valves cardiaques guident le sang en s'ouvrant et en se fermant.";
+                }
+                
+                fragment.material.color.set(0x2a9d8f);
+                fragment.material.emissive.set(0x2a9d8f);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+            else{
+                // Fragments décoratifs : rouge
+               fragment.material.color.set(0xff3355);
+                fragment.material.emissive.set(0xff3355);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+
+            fragment.scale.setScalar(0.02);
+
+            fragment.position.set(
+                Math.random() * 0.2 - 0.1,
+                Math.random() * 0.3 - 0.1,
+                Math.random() * 0.2 - 0.1
+            );
+
+        }
+        //AURA
+        const auraCoeur = new THREE.PointLight(
+            0xff3355,//couleur
+            30, //intensité
+            30 //distance d'éclairage
+        );
+        coeur.add(auraCoeur);
+        auraCoeur.position.set(0, 0, 0);
     },
 
     undefined,
@@ -550,6 +497,564 @@ loader.load(
         console.error("Erreur lors du chargement du coeur :", erreur);
     }
 );
+
+// CHARGEMENT DES POUMONS
+let poumons = null;
+
+loader.load(
+    './models/human-lungs-light.glb',
+
+    function(gltf) {
+
+        poumons = gltf.scene;
+
+        poumons.scale.set(15, 15, 15);
+        poumons.position.set(-18.5, 2, -0.0);//-4, 2, -5)
+        poumons.rotation.y = 0;
+        rendreTranslucide(poumons,0xea9ab2);//f49cbb
+
+        espaceCorps.add(poumons);
+
+        //CREATION DU GROUPE FRAGMENT POUMONS
+        const groupeFragmentsPoum = new THREE.Group();
+        poumons.add(groupeFragmentsPoum);
+
+ 
+        for(let i = 0; i < 56; i++){
+            const fragment = creerFragment(groupeFragmentsPoum);
+
+            fragment.material = fragmentMaterial.clone();//clone des matériaux fragment
+
+            if(i < 2){
+                // Fragments informatifs : turquoise
+                fragment.userData.informatif = true;
+
+                if (i === 0) {
+                    fragment.userData.fait = "Les poumons aident aussi à parler et à chanter, l'air expiré fait vibrer les cordes vocales";
+                } 
+                else {
+                    fragment.userData.fait = "Les poumons contiennent environ 300 millions d'alvéoles, de minuscules sacs où se produisent les échanges gazeux";
+                }
+                
+                fragment.material.color.set(0x2a9d8f);
+                fragment.material.emissive.set(0x2a9d8f);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+            else{
+                // Fragments décoratifs : rose
+                fragment.material.color.set(0xea9ab2);
+                fragment.material.emissive.set(0xff3355);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4;//intensité de l'élmission lumineuse
+            }
+
+            fragment.scale.setScalar(0.03);
+
+            fragment.position.set(
+                Math.random() * 0.4 - 0.2,
+                Math.random() * 0.7 - 0.3,
+                Math.random() * 0.2 - 0.1
+            );
+        }
+        //AURA
+        const auraPoumons = new THREE.PointLight(
+            0xea9ab2,//couleur
+            30, //intensité
+            30 //distance d'éclairage
+        );
+        poumons.add(auraPoumons);
+        auraPoumons.position.set(0, 0, 0);
+
+    },
+
+    undefined,
+
+    function(erreur) {
+        console.error("Erreur lors du chargement des poumons :", erreur);
+    }
+);
+
+// CHARGEMENT DU CERVEAU
+let cerveau = null;
+
+loader.load(
+    './models/human-brain-light.glb',
+
+    function(gltf) {
+
+        cerveau = gltf.scene;
+
+        cerveau.scale.set(15, 15, 15);
+        cerveau.position.set(18, 2, 2);//9, 2, -5)
+        cerveau.rotation.y = 0;
+        rendreTranslucide(cerveau,0xc77dff);
+
+        espaceCorps.add(cerveau);
+
+
+         //CREATION DU GROUPE FRAGMENT CERVEAU
+        const groupeFragmentsCerv = new THREE.Group();
+        cerveau.add(groupeFragmentsCerv);
+
+        for(let i = 0; i < 40; i++){
+            const fragment = creerFragment(groupeFragmentsCerv);
+
+            fragment.material = fragmentMaterial.clone();//clone des matériaux fragment
+
+            if(i < 2){
+                // Fragments informatifs : turquoise
+                fragment.userData.informatif = true;
+
+                if (i === 0) {
+                    fragment.userData.fait = "Le cerveau représente environ 2% du poids du corps, mais consomme près de 20% de son énergie au repos";
+                } 
+                else {
+                    fragment.userData.fait = "Le cerveau contient des milliards de neurones qui communiquent entre eux grâce à des signaux électriques et chimiques";
+                }
+                
+                fragment.material.color.set(0x2a9d8f);
+                fragment.material.emissive.set(0x2a9d8f);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+            else{
+                // Fragments décoratifs : violet
+                fragment.material.color.set(0xc77dff);
+                fragment.material.emissive.set(0xff3355);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4;//intensité de l'élmission lumineuse
+            }
+
+            fragment.scale.setScalar(0.03);
+
+            fragment.position.set(
+                Math.random() * 0.5 - 0.3,
+                Math.random() * 0.6 - 0.2,
+                Math.random() * 0.2 - 0.1
+            );
+        }
+        //AURA
+        const auraCerveau = new THREE.PointLight(
+            0xc77dff,//couleur
+            30, //intensité
+            30 //distance d'éclairage
+        );
+        cerveau.add(auraCerveau);
+        auraCerveau.position.set(0, 0, 0);
+
+    },
+
+    undefined,
+
+    function(erreur) {
+        console.error("Erreur lors du chargement du cerveau :", erreur);
+    }
+);
+
+// CHARGEMENT DU SQUELETTE
+let squelette = null;
+
+loader.load(
+    './models/human-skeleton-light.glb',
+
+    function(gltf) {
+
+        squelette = gltf.scene;
+
+        squelette.scale.set(4, 4, 4);
+        squelette.position.set(12.5, 1, -20);// 5, 2, -5
+        squelette.rotation.y = 0;
+        rendreTranslucide(squelette,0x8ecae6);
+
+        espaceCorps.add(squelette);
+
+        //CREATION DU GROUPE FRAGMENT SQUELETTE
+        const groupeFragmentsSquel = new THREE.Group();
+        squelette.add(groupeFragmentsSquel);
+
+        for(let i = 0; i < 35; i++){
+            const fragment = creerFragment(groupeFragmentsSquel);
+
+            fragment.material = fragmentMaterial.clone();//clone des matériaux fragment
+
+            if(i < 2){
+                // Fragments informatifs : turquoise
+                fragment.userData.informatif = true;
+
+                if (i === 0) {
+                    fragment.userData.fait = "Tes os servent aussi de réserve minérale, notamment pour le calcium et le phosphore";
+                } 
+                else {
+                    fragment.userData.fait = "La moelle osseuse fabrique les cellules du sang";
+                }
+                
+                fragment.material.color.set(0x2a9d8f);
+                fragment.material.emissive.set(0x2a9d8f);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+            else{
+                // Fragments décoratifs : bleu
+                fragment.material.color.set(0x8ecae6);
+                fragment.material.emissive.set(0x8ecae6);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4;//intensité de l'élmission lumineuse
+            }
+
+            fragment.scale.setScalar(0.1);
+
+            fragment.position.set(
+                Math.random() * 0.9 - 0.4,
+                Math.random() * 2 - 0.1,
+                Math.random() * 0.2 - 0.1
+            );
+        }
+        //AURA
+        const auraSquel = new THREE.PointLight(
+            0x8ecae6,//couleur
+            30, //intensité
+            30 //distance d'éclairage
+        );
+        squelette.add(auraSquel);
+        auraSquel.position.set(0, 0, 0);
+
+    },
+
+    undefined,
+
+    function(erreur) {
+        console.error("Erreur lors du chargement du squelette :", erreur);
+    }
+);
+
+// CHARGEMENT DU SYSTEME DIGESTIF
+let digestif = null;
+
+loader.load(
+    './models/digestive.glb',
+
+    function(gltf) {
+
+        digestif = gltf.scene;
+
+        digestif.scale.set(3, 3, 3);
+        digestif.position.set(-12.5, 3.5, -20 );// -9, 2, -5
+        digestif.rotation.y = 0;
+        rendreTranslucide(digestif,0xff7f51);
+
+        espaceCorps.add(digestif);
+
+
+        //CREATION DU GROUPE FRAGMENT SYS_DISG
+        const groupeFragmentsDis = new THREE.Group();
+        digestif.add(groupeFragmentsDis);
+
+ 
+        for(let i = 0; i < 40; i++){
+            const fragment = creerFragment(groupeFragmentsDis);
+
+            fragment.material = fragmentMaterial.clone();//clone des matériaux fragment
+
+            if(i < 2){
+                // Fragments informatifs : turquoise
+                fragment.userData.informatif = true;
+
+                if (i === 0) {
+                    fragment.userData.fait = "Ton estomac se protège lui-même, il produit une couche de mucus qui protège sa paroi contre son propre acide gastrique";
+                } 
+                else {
+                    fragment.userData.fait = "La digestion continue pendant ton sommeil, ton système digestif poursuit son travail même lorsque tu dors";
+                }
+
+                fragment.material.color.set(0x2a9d8f);
+                fragment.material.emissive.set(0x2a9d8f);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4//intensité de l'élission lumineuse
+            }
+
+            else{
+                // Fragments décoratifs : bleu
+                fragment.material.color.set(0xff7f51);//couleur des fragments
+                fragment.material.emissive.set(0xff3355);//couleur le matériau semble émettre
+                fragment.material.emissiveIntensity = 0.4;//intensité de l'élmission lumineuse
+            }
+
+            fragment.scale.setScalar(0.2);
+
+            fragment.position.set(
+                Math.random() * 4 - 2,
+                Math.random() * 3 - 1,
+                Math.random() * 0.8 - 0.1
+            );
+        }
+
+        //AURA
+        const auradig = new THREE.PointLight(
+            0xff7f51,//couleur
+            30, //intensité
+            30 //distance d'éclairage
+        );
+        digestif.add(auradig);
+        auradig.position.set(0, 0, 0);
+
+    },
+
+    undefined,
+
+    function(erreur) {
+        console.error("Erreur lors du chargement du digestif :", erreur);
+    }
+);
+
+
+
+// SOCLES DES ORGANES
+const geometrySocle = new THREE.CylinderGeometry(1.2, 2, 2, 120);
+
+
+const materiauSocle = new THREE.MeshStandardMaterial({
+    color:  0x333333
+});
+
+
+const soclePoumons = new THREE.Mesh(geometrySocle, materiauSocle);
+soclePoumons.position.set(-18.5, -0.4, -0.01);
+soclePoumons.scale.set(1.8, 1, 1.8);
+
+const socleCerveau = soclePoumons.clone();
+socleCerveau.position.set(18, -0.4, 0.2);
+socleCerveau.scale.set(1.8, 1, 1.8);
+
+const socleSquelette = soclePoumons.clone();
+socleSquelette.position.set(12.5, -0.4, -20);
+socleSquelette.scale.set(1.8, 1, 1.8);
+
+const socleDigestif = soclePoumons.clone();
+socleDigestif.position.set(-12.5, -0.4, -20.5);
+socleDigestif.scale.set(1.8, 1, 1.8);
+
+espaceCorps.add(socleDigestif);
+espaceCorps.add(socleSquelette);
+espaceCorps.add(soclePoumons);
+espaceCorps.add(socleCerveau);
+
+
+
+//TRANSPARENCE 3D MODELE
+function rendreTranslucide(modele, couleur) {
+
+    modele.traverse(function(objet) {
+
+        if (objet.isMesh) {
+
+            objet.material = objet.material.clone();
+
+            objet.material = new THREE.MeshPhysicalMaterial({
+
+                color: couleur,
+
+                transparent: true,
+                opacity: 0.95,
+
+                roughness: 0.05,
+                metalness: 0,
+
+                transmission: 0.8,
+                thickness: 1, // Simule l'épaisseur du verre.
+
+                ior: 1.5,
+
+                clearcoat: 1, //Ajoute une couche de brillance.
+                clearcoatRoughness: 0.05,//Contrôle la netteté de cette brillance.
+
+                iridescence: 1, //active l'effet au maximum
+                iridescenceIOR: 1.3, //règle l'indice de réfraction du film
+                iridescenceThicknessRange: [100, 800] //définit la plage d'épaisseur qui influence les couleurs.
+            });
+
+            objet.material.color.set(couleur);
+
+            objet.material.depthWrite = false;
+            objet.material.needsUpdate = true;
+        }
+
+    });
+
+}
+
+
+
+//DETECTION DE LA SOURIS
+const raycaster = new THREE.Raycaster(); //représente notre rayon invisible qui va détecter les objets.
+const souris = new THREE.Vector2(); //va stocker la position du clic sur l'écran/ Vector2 2 dimensions
+
+const ficheOrgane = document.getElementById("fiche-organe");
+const boutonFermer = document.getElementById("fermer-fiche");
+
+boutonFermer.addEventListener("click", function() {
+    ficheOrgane.style.display = "none";
+});
+
+
+
+// INFO FICHE
+const informationsOrganes = {
+
+    "human-heart": {
+        nom: "Le Cœur",
+        image: "images/coeur.png",
+        fonction: "Le cœur est un organe musculaire creux et vital qui fonctionne comme une pompe pour assurer la circulation du sang dans tout l'organisme",
+        description: "Le cœur est divisé en deux parties (gauche et droite) séparées par une paroi. Chaque partie comprend deux cavités. Le cœur droit reçoit le sang pauvre en oxygène (chargé en dioxyde de carbone) qui revient des organes. Il l'envoie vers les poumons via l'artère pulmonaire pour qu'il s'y oxygène. Le cœur gauche reçoit le sang riche en oxygène provenant des poumons. Il le propulse avec force dans tout le corps via l'aorte pour nourrir les cellules",
+        fait: "Le cœur possède son propre système électrique, grâce à des cellules spécialisées, il génère lui-même ses propres impulsions. C'est ce qui lui permet de continuer à battre même lorsqu'il est retiré du corps, à condition de recevoir de l'oxygène",
+        deplacement: "translate(340px, -270px)"
+    },
+
+    "human-lungs": {
+        nom: "Les Poumons",
+        image: "images/poumons.png",
+        fonction: "Les poumons sont les organes principaux de la respiration. Leur fonction vitale est d'assurer les échanges gazeux entre l'air extérieur et le sang",
+        description: "Les poumons sont les deux principaux organes de l'appareil respiratoire, situés dans la cage thoracique de part et d'autre du cœur",
+        fait: "Ils ne sont pas symétriques : Le poumon droit est plus grand et plus lourd (environ 650 g, divisé en 3 lobes) que le poumon gauche (environ 550 g, divisé en 2 lobes), car le cœur occupe une partie de l'espace du côté gauche",
+        deplacement: "translate(330px, -190px)"
+    },
+
+    "human-brain": {
+        nom: "Le Cerveau",
+        image: "images/cerveau.png",
+        fonction: "Le cerveau est le véritable « chef d'orchestre » du corps humain. Il fait partie du système nerveux central et joue un rôle essentiel pour nous maintenir en vie, interagir avec notre environnement et donner sens à notre existence",
+        description: "Le cerveau est l'organe principal du système nerveux central",
+        fait: "Le cerveau lui-même ne possède aucun récepteur de la douleur (nocicepteurs). C'est pour cette raison que certaines opérations chirurgicales sur le cerveau peuvent se faire alors que le patient est éveillé",
+        deplacement: "translate(340px, -190px)"
+    },
+
+    "human-skeleton": {
+        nom: "Le Squelette",
+        image: "images/squelette.png",
+        fonction: "Le squelette soutient le corps, protège les organes internes et permet les mouvements grâce à son association avec les muscles et les articulations. Il participe également à la production des cellules sanguines et au stockage des minéraux",
+        description: "Le squelette humain adulte est constitué de 206 os. Ces os sont reliés entre eux par des articulations et forment la structure rigide du corps. On distingue deux grandes parties : le squelette axial (crâne, colonne vertébrale et cage thoracique) et le squelette appendiculaire (membres supérieurs, membres inférieurs et ceintures).",
+        fait: "Le squelette n'est pas figé , il se remodèle en permanence (environ 10 % de la masse osseuse est renouvelée chaque année) grâce à l'action des ostéoclastes et des ostéoblastes",
+        deplacement: "translate(-67px, -10px)"
+    },
+
+    "mesh_0": {
+        nom: "Le système digestif",
+        image: "images/disgetif.png",
+        fonction: "Le système digestif transforme les aliments en nutriments que le corps peut absorber et utiliser pour produire de l'énergie, construire et réparer les tissus. Il permet également d'éliminer les déchets issus de la digestion.",
+        description: "Le système digestif est un ensemble d'organes qui travaillent ensemble pour assurer la digestion. Il comprend notamment la bouche, l'œsophage, l'estomac, l'intestin grêle et le gros intestin. Les aliments y sont progressivement décomposés : les nutriments sont principalement absorbés dans l'intestin grêle, tandis que le gros intestin récupère une partie de l'eau et participe à la formation des selles",
+        fait: "Le système digestif possède un réseau nerveux si vaste — le système nerveux entérique, composé de 100 à 200 millions de neurones — qu'il est souvent surnommé notre  deuxième cerveau" ,
+        deplacement: "translate(380px, -250px)"
+    }
+
+};
+
+const nomOrganeHTML = document.getElementById("nom-organe");
+const imageOrganeHTML = document.querySelector("#image-organe img");
+
+const fonctionOrganeHTML = document.getElementById("fonction-organe");
+const descriptionOrganeHTML = document.getElementById("description-organe");
+const faitOrganeHTML = document.getElementById("fait-organe");
+
+//FONCTION AFFICH_FICHE
+function afficherFicheOrgane(nom, fait = null) {
+
+    // MODE 1 : AFFICHER UN FAIT INTÉRESSANT
+    if (fait !== null) {
+
+        nomOrganeHTML.textContent = "LE SAVAIS-TU ?";
+        imageOrganeHTML.style.display = "none";
+
+        fonctionOrganeHTML.textContent = "";
+        descriptionOrganeHTML.textContent = fait;
+        faitOrganeHTML.textContent = "";
+
+        ficheOrgane.style.display = "block";
+        return;
+    }
+
+    // MODE 2 : AFFICHER LA FICHE DE L'ORGANE
+    const informations = informationsOrganes[nom];// JavaScript va récupérer automatiquement toutes les informations associées à cette clé dans ton objet
+
+    if (!informations) {
+        return;
+    }
+
+    //Remplir la fiche
+    nomOrganeHTML.textContent = informations.nom;
+    imageOrganeHTML.style.display = "";// Réaffiche l'image de la fiche
+    imageOrganeHTML.src = informations.image;
+    imageOrganeHTML.style.transform = informations.deplacement || "translate(0px, 0px)";
+
+    //Infos sur les organes
+    fonctionOrganeHTML.textContent = informations.fonction;
+    descriptionOrganeHTML.textContent = informations.description;
+    faitOrganeHTML.textContent = informations.fait;
+
+    ficheOrgane.style.display = "block";// affi
+}
+
+//FONCTION QUI DETECTE OU ON CLIQUE
+function detecterClic(event){
+    
+    souris.x = (event.clientX / window.innerWidth) * 2 - 1 // récupère la position horizontale du clic.
+    souris.y = -(event.clientY / window.innerHeight) * 2 + 1 // récupère sa position verticale
+
+    raycaster.setFromCamera(souris, camera); // Elle récupère la position de la souris / Elle projette un rayon depuis la caméra dans la direction correspondante
+
+    const objets = [coeur, poumons, cerveau, squelette, digestif].filter(objet => objet !== null); //création d'un tableau des eléments cliquable/ garde les objets sui sont différent de null
+    const intersections = raycaster.intersectObjects(objets, true); // cherche les objets  rencontrés par le rayon
+    console.log(intersections);// observer le résultat dans la console
+
+    if (intersections.length > 0){ // vérifie qu'au moins un objet a été touché
+
+        const objetClique = intersections[0].object; // récupère la première intersection
+
+        let fragmentInformatif = objetClique;
+
+        while (fragmentInformatif && !fragmentInformatif.userData.informatif) {
+            fragmentInformatif = fragmentInformatif.parent;
+        }
+
+        const organeSelectionne = objets.find(organe => {
+
+            let parent = objetClique;
+            while (parent) {
+
+                if (parent === organe) {
+                    return true;
+                }
+
+                parent = parent.parent;
+            }
+                                          
+            return false;
+        });
+        console.log(organeSelectionne);
+
+        console.log(objetClique); //
+        const nomOrgane = objetClique.name;
+
+       if (fragmentInformatif && fragmentInformatif.userData.informatif) {
+
+            afficherFicheOrgane(null, fragmentInformatif.userData.fait);
+        }
+
+        else if (organeSelectionne) {
+
+            afficherFicheOrgane(nomOrgane);
+        }
+
+        const positionOrgane = new THREE.Vector3();// crée un vecteur  qui possède 3 coordonnées
+        organeSelectionne.getWorldPosition(positionOrgane); // récupère la position réel de l'organe
+        positionOrgane.project(camera);// transforme les coordonnées 3D de l'organe en coordonnées normalisées par rapport à la caméra
+        //elle permet à Three.js de calculer où l'organe apparaît sur l'écran selon le point de vue.
+        
+        const x = (positionOrgane.x * 0.5 + 0.5) * window.innerWidth;
+        const y = (-positionOrgane.y * 0.5 + 0.5) * window.innerHeight;
+
+        ficheOrgane.style.left = (x + 40) + "px";
+        ficheOrgane.style.top = (y - 150) + "px";
+    }
+
+};
+window.addEventListener("click", detecterClic); //dit à ton navigateur d'appeler la fonction lorsqu'on clique
+
 
 
 scene.add(espaceCorps);
