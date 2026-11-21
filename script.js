@@ -899,7 +899,7 @@ const informationsOrganes = {
 
     "human-heart": {
         nom: "Le Cœur",
-        image: "images/coeur.png",
+        image: "Images/coeur.png",
         fonction: "Le cœur est un organe musculaire creux et vital qui fonctionne comme une pompe pour assurer la circulation du sang dans tout l'organisme",
         description: "Le cœur est divisé en deux parties (gauche et droite) séparées par une paroi. Chaque partie comprend deux cavités. Le cœur droit reçoit le sang pauvre en oxygène (chargé en dioxyde de carbone) qui revient des organes. Il l'envoie vers les poumons via l'artère pulmonaire pour qu'il s'y oxygène. Le cœur gauche reçoit le sang riche en oxygène provenant des poumons. Il le propulse avec force dans tout le corps via l'aorte pour nourrir les cellules",
         fait: "Le cœur possède son propre système électrique, grâce à des cellules spécialisées, il génère lui-même ses propres impulsions. C'est ce qui lui permet de continuer à battre même lorsqu'il est retiré du corps, à condition de recevoir de l'oxygène",
@@ -908,7 +908,7 @@ const informationsOrganes = {
 
     "human-lungs": {
         nom: "Les Poumons",
-        image: "images/poumons.png",
+        image: "Images/poumons.png",
         fonction: "Les poumons sont les organes principaux de la respiration. Leur fonction vitale est d'assurer les échanges gazeux entre l'air extérieur et le sang",
         description: "Les poumons sont les deux principaux organes de l'appareil respiratoire, situés dans la cage thoracique de part et d'autre du cœur",
         fait: "Ils ne sont pas symétriques : Le poumon droit est plus grand et plus lourd (environ 650 g, divisé en 3 lobes) que le poumon gauche (environ 550 g, divisé en 2 lobes), car le cœur occupe une partie de l'espace du côté gauche",
@@ -917,7 +917,7 @@ const informationsOrganes = {
 
     "human-brain": {
         nom: "Le Cerveau",
-        image: "images/cerveau.png",
+        image: "Images/cerveau.png",
         fonction: "Le cerveau est le véritable « chef d'orchestre » du corps humain. Il fait partie du système nerveux central et joue un rôle essentiel pour nous maintenir en vie, interagir avec notre environnement et donner sens à notre existence",
         description: "Le cerveau est l'organe principal du système nerveux central",
         fait: "Le cerveau lui-même ne possède aucun récepteur de la douleur (nocicepteurs). C'est pour cette raison que certaines opérations chirurgicales sur le cerveau peuvent se faire alors que le patient est éveillé",
@@ -926,7 +926,7 @@ const informationsOrganes = {
 
     "human-skeleton": {
         nom: "Le Squelette",
-        image: "images/squelette.png",
+        image: "Images/squelette.png",
         fonction: "Le squelette soutient le corps, protège les organes internes et permet les mouvements grâce à son association avec les muscles et les articulations. Il participe également à la production des cellules sanguines et au stockage des minéraux",
         description: "Le squelette humain adulte est constitué de 206 os. Ces os sont reliés entre eux par des articulations et forment la structure rigide du corps. On distingue deux grandes parties : le squelette axial (crâne, colonne vertébrale et cage thoracique) et le squelette appendiculaire (membres supérieurs, membres inférieurs et ceintures).",
         fait: "Le squelette n'est pas figé , il se remodèle en permanence (environ 10 % de la masse osseuse est renouvelée chaque année) grâce à l'action des ostéoclastes et des ostéoblastes",
@@ -935,7 +935,7 @@ const informationsOrganes = {
 
     "mesh_0": {
         nom: "Le système digestif",
-        image: "images/disgetif.png",
+        image: "Images/disgetif.png",
         fonction: "Le système digestif transforme les aliments en nutriments que le corps peut absorber et utiliser pour produire de l'énergie, construire et réparer les tissus. Il permet également d'éliminer les déchets issus de la digestion.",
         description: "Le système digestif est un ensemble d'organes qui travaillent ensemble pour assurer la digestion. Il comprend notamment la bouche, l'œsophage, l'estomac, l'intestin grêle et le gros intestin. Les aliments y sont progressivement décomposés : les nutriments sont principalement absorbés dans l'intestin grêle, tandis que le gros intestin récupère une partie de l'eau et participe à la formation des selles",
         fait: "Le système digestif possède un réseau nerveux si vaste — le système nerveux entérique, composé de 100 à 200 millions de neurones — qu'il est souvent surnommé notre  deuxième cerveau" ,
