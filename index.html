@@ -25,16 +25,63 @@
 
         <section id="interface">
 
-            <h1>Le Vestibule</h1>
+            <div id="lieu-actuel">
+                <span class="lieu-indicateur"></span>
+                <span>LE VESTIBULE</span>
+                <span class= "lieu-indications"> Explore ton palais mental</span>
+            </div>
 
-            <p>Bienvenue dans ton palais</p>
+            <div id="commandes-directions">
 
-            <p class="indication">
-            Exploration des lieux et des portails
-            </p>
+                <span class="touches">DIRECTION</span>
+
+                <div class="grille-fleches">
+                    <button class="fleche haut">↑</button>
+                    <button class="fleche gauche">←</button>
+                    <button class="fleche droite">→</button>
+                    <button class="fleche bas">↓</button>
+                </div>
+            </div>
 
         </section>
     </main>
+
+    <section id="fiche-organe"> <!-- représente notre fiche -->
+
+    <button id="fermer-fiche">×</button> <!-- Bouton pour fermer la fiche -->
+
+    <h2 id="nom-organe">Le Cœur</h2>
+
+    <div class="contenu-fiche"> <!-- div regroupe organise les éléments-->
+
+        <div id="image-organe">
+            <img src="images/coeur.png" alt="Illustration du cœur">
+        </div>
+
+        <div class="informations-organe">
+
+            <h3>Fonction</h3>
+            <p id="fonction-organe">
+                Pompe le sang dans tout l'organisme.
+            </p>
+
+            <h3>Description</h3>
+            <p id="description-organe">
+                Le cœur est un muscle puissant qui bat sans arrêt,
+                envoyant le sang vers le cerveau, les poumons
+                et le reste du corps.
+            </p>
+
+            <h3>À savoir</h3>
+            <p id="fait-organe">
+                Il bat en moyenne 100 000 fois par jour.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 
     <script type="module" src="script.js"></script>
 
