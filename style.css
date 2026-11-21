@@ -59,3 +59,194 @@ body {
 #scene canvas {
     display: block;
 }
+
+/* FICHE INFORMATIVE DES ORGANES */
+
+#fiche-organe {
+
+    position: fixed;
+    
+
+    width: 550px;
+    min-height: 300px;
+
+    display: none; /*Cache la fiche au départ.*/
+
+    z-index: 200; /*Place la fiche devant la scène 3D.*/
+
+    background: rgba(25, 8, 15, 0.92);/*permet de définir une couleur avec un niveau de transparence.*/
+	border: 1px solid rgba(255, 100, 130, 0.5);
+	border-radius: 18px;/*arrondit les coins*/
+	padding: 30px;
+	color: white;
+	box-shadow: 0 0 30px rgba(255, 50, 90, 0.15);/*crée une ombre autour de la fiche*/
+
+}
+
+/* Organisation du contenu carte organe*/
+	.contenu-fiche {
+    	display: flex;
+    	gap: 30px;
+    	align-items: center;
+	}
+
+	#image-organe {
+    	width: 40px;
+    	height: 280px;
+    	flex-shrink: 0;/*empêche la zone de rétrécir si l'espace devient trop petit*/
+	}
+
+	.informations-organe {
+    	flex: 1;/*permet à la zone des informations d'occuper tout l'espace disponible après la zone réservée à l'image.*/
+	}
+
+	#nom-organe {
+    	font-size: 28px;/*définit la taille du texte*/
+    	color: #ff829d;/*donne au titre sa couleur rose lumineuse*/
+    	margin-bottom: 20px;/*ajoute un espace sous le titre pour ne pas coller les informations*/
+	}
+
+	.informations-organe h3 {
+    	font-size: 17px;
+    	color: #ff9aad;
+    	margin-bottom: 5px;
+	}
+
+	.informations-organe p {
+    	font-size: 14px;
+    	line-height: 1.6;
+    	color: #e8dfe3;
+    	margin-bottom: 18px;
+	}
+
+	#image-organe img {
+    width: 440%;
+    height: 90%;
+    object-fit: contain;/*il permet de conserver les proportions de ton organe sans le déformer*/
+    object-position: center;
+    transform: translate(310px, -120px);
+	}
+
+
+/* languette du Vestibule */
+
+#lieu-actuel {
+    position: fixed;
+    top: -55px;
+    left: -670px;
+    flex-direction: column;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px 22px;
+
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+
+    color: #777b85;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+
+    z-index: 10;
+}
+
+.lieu-indicateur {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d9a6c5;
+    box-shadow: 0 0 8px #d9a6c5;
+}
+
+
+.lieu-indications {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #777b85;
+}
+
+
+
+/*LANGUETTE DIRECTIONS*/
+#commandes-directions {
+    position: fixed;
+    top: -55px;
+    right: -695px;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    padding: 15px 20px;
+
+    background: rgba(180, 185, 195, 0.30);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+}
+
+.direction-titre {
+    display: block;
+    margin-bottom: 10px;
+
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #999da8;
+
+    background: none;
+    border: none;
+}
+
+.grille-fleches {
+    display: grid;/*indique la colonne dans laquelle placer une flèche*/
+    grid-template-columns: repeat(3, 30px);
+    grid-template-rows: repeat(3, 30px);
+    gap: 4px;
+}
+
+.haut {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.gauche {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.droite {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.bas {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.fleche {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    color: #212529;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.fleche:hover {
+    color: #d9a6c5;
+}
+
+
+
