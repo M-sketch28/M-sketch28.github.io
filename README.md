@@ -1,18 +1,10 @@
 # M-sketch28.github.io
 
-<!DOCTYPE html>
-<html lang="fr">
+Ma page web est un palais mental dans lequel nous pouvons trouver des informations sur les organes du corps. 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palais mental</title>
-</head>
 
-<body>
-
-    <h1>Mon palais mental</h1>
-
-</body>
-
-</html>
+Crédit - Modèles 3D
+Modèle 3D digestive system 
+Créateur : jrdnether
+Licence : CC Atribution
+Lien original : Digestive System sur Sketchfab
