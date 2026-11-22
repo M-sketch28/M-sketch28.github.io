@@ -7,9 +7,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <!--L'importmap est comme un petit dictionnaire qui indique au navigateur où trouver les modules JavaScript lorsqu'on utilise leurs noms dans les instructions import -->
     <script type="importmap"> {
         "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js", 
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
         "three/addons/" : "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
         }
     }
@@ -21,7 +22,7 @@
 
 <body>
     <main id="palais">
-        <div id="scene"></div>
+        <div id="scene"></div> <!-- Récupérer par JavaScript pour y inséerer le canvas THREE.js(bibliothèque javascript externe) -->
 
         <section id="interface">
 
