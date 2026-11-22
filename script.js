@@ -208,12 +208,12 @@ camera.lookAt(pointRegard);
 //Matière du fragment
 const fragmentMaterial = new THREE.MeshPhysicalMaterial({// apparence fragment
     color: 0xe5f2ff, // couleur du fragment
-    roughness: 0.02, //rend la surface du fragment plus lisse, reflets plus nets
-    metalness: 0, // rend le fragment métallique
+    roughness: 0.02, //rend la surface du fragment plus lisse, reflets plus nets /  Rugosité de la surface
+    metalness: 0, // rend le fragment métallique /  Aspect métallique
     transmission: 1, // quantité de lumière qui traverse le matériau
     thickness: 0.6, // laisse passer beaucoup de lumière
     ior: 2.4, // determine la déviation de la lumière 
-    envMapIntensity : 1.5
+    envMapIntensity : 1.5 // Intensité de l'environnement réfléchi
 });
 
 
@@ -230,10 +230,10 @@ function creerFragment(parent = scene){
     const positions = fragmentGeometry.attributes.position;
 
     // Utilisation de Map
-    const facteurs = new Map(); // Map structure  sui permet d'utiliser clé/valeur
+    const facteurs = new Map(); // Map structure  qui permet d'utiliser clé/valeur  /crée une collection qui associe des clés à des valeurs
     //Déformations
-    for(let i = 0; i < positions.count; i++){
-        const x = positions.getX(i);
+    for(let i = 0; i < positions.count; i++){ //indique le nombre de positions de sommets enregistrées dans la géométrie
+        const x = positions.getX(i); // getX(i), getY(i) et getZ(i) récupèrent les coordonnées du sommet
         const y = positions.getY(i);
         const z = positions.getZ(i);
 
@@ -264,8 +264,8 @@ function creerFragment(parent = scene){
     const axesChoisi = axes[Math.floor(Math.random() * axes.length)]; 
     const sens = Math.random() < 0.5 ? -1 : 1; // choisi entre une rotation positive et négative
     const vitesse = sens * (0.001 + Math.random() *0.002); // Vitesse de la rotation
-    fragment.userData.axe = axesChoisi;
-    fragment.userData.vitesse = vitesse;
+    fragment.userData.axe = axesChoisi;// userData est un espace prévu par Three.js pour stocker des informations personnalisées sur un objet / garde en mémoire l'axes de l'objet
+    fragment.userData.vitesse = vitesse; // garde en mémoire la vitesse de l'objet 
 
     const edgesGeometry = new THREE.EdgesGeometry(fragmentGeometry);// Analyse la géométrie et récupère les arrêtes
     const edges = new THREE.LineSegments( // dessine une succesion de segments independants 
@@ -295,12 +295,12 @@ for(let i = 0; i < 120; i++){
 
     if(fragment.position.z > -7 && 
        fragment.position.z < -3 &&
-       Math.abs(fragment.position.x) < 2){ // fragment proche de la profondeur du portail / Math.abs() Repère les fragments proche du portail
+       Math.abs(fragment.position.x) < 2){ // fragment proche de la profondeur du coeur / Math.abs() Repère les fragments proche du coeur
 
-        if(fragment.position.x < 0){ // savoir dans quelle directeion déplacer les fragments
+        if(fragment.position.x < 0){ // savoir dans quelle direction déplacer les fragments
             fragment.position.x -= 2;
         }
-        else{ //savoir dans quelle directeion déplacer les fragments
+        else{ //savoir dans quelle direction déplacer les fragments
             fragment.position.x += 2;
         }
 
@@ -338,7 +338,7 @@ function creerTextureMarbre() {
     canvas.width = 1024;
     canvas.height = 1024;
 
-    const contexte = canvas.getContext("2d");
+    const contexte = canvas.getContext("2d");// Récupère les outils pour dessiner en 2D.
 
     // Fond blanc
     contexte.fillStyle = "#ffffff";
@@ -353,10 +353,10 @@ function creerTextureMarbre() {
     return texture;
 }
 
-const solCorpsGeometry = new THREE.PlaneGeometry(200, 200);//création de la forme du sol du corps
+const solCorpsGeometry = new THREE.PlaneGeometry(200, 200);//création de la forme du sol du corps plan rectangulaire
 
 const solCorpsMaterial = new THREE.MeshPhysicalMaterial({// physique du sol 
-    map: creerTextureMarbre(),//map indique au matériau quelle image utiliser pour recouvrir sa surface.
+    map: creerTextureMarbre(),//map indique au matériau quelle image utiliser pour recouvrir sa surface. applique la texture blanche du sol
     color: 0xffffff,
     roughness: 0.08,
     metalness: 0.05,
@@ -370,10 +370,10 @@ const solCorps = new THREE.Mesh(// creation de l'objet sol
     solCorpsMaterial
 );
 
-solCorps.rotation.x = -Math.PI / 2;
-solCorps.position.y = -1;
+solCorps.rotation.x = -Math.PI / 2;// positionne horizontalement au niveau du sol
+solCorps.position.y = -1; // positionne au sol
 
-const lumiereSol = new THREE.PointLight(0xffffff, 16, 30);//lumière pour éclairer le sol et le faire être plus réflechissant
+const lumiereSol = new THREE.PointLight(0xffffff, 16, 30);//lumière pour éclairer le sol et le faire être plus réflechissant / PointLight crée une lumière qui rayonne dans toutes les directions depuis un point précis
 
 lumiereSol.position.set(0, 5, 0);
 
@@ -421,19 +421,19 @@ espaceCorps.add(pilierCorps4);
 
 //CHARGEMENTS DES ORGANES
 // CHARGEMENT DU COEUR
-const loader = new GLTFLoader();
+const loader = new GLTFLoader(); // est un outil fourni par Three.js pour charger des modèles 3D au format GLTF ou GLB céationd'une instance de cet outil
 let coeur = null;
 
-loader.load(
-    './Models/human-heart-light.glb',
+loader.load( // La méthode .load() reçoit quatre paramètres 
+    './Models/human-heart-light.glb', // 1 Le chemin
 
-    function(gltf) {
+    function(gltf) { // 2 fonction exécuté quand le modèle est chargé
 
-        coeur = gltf.scene;
+        coeur = gltf.scene; // Le fichier GLB contient une scène (gltf.scene) qui regroupe le modèle 3D et ses éventuels éléments enfants / On récupère cette scène et on la stocke dans notre variable coeur
 
         coeur.scale.set(30, 30, 30);
         coeur.position.set(0, 2, -5);
-        coeur.rotation.y = 0;
+        coeur.rotation.y = 0; // On définit sa rotation autour de l'axe vertical Y à zéro 
         rendreTranslucide(coeur,0xff3355);
 
         espaceCorps.add(coeur);
@@ -482,7 +482,7 @@ loader.load(
 
         }
         //AURA
-        const auraCoeur = new THREE.PointLight(
+        const auraCoeur = new THREE.PointLight(// PointLight crée une lumière qui rayonne dans toutes les directions depuis un point précis
             0xff3355,//couleur
             30, //intensité
             30 //distance d'éclairage
@@ -491,9 +491,9 @@ loader.load(
         auraCoeur.position.set(0, 0, 0);
     },
 
-    undefined,
+    undefined, // 3 Suit la progression du chargement
 
-    function(erreur) {
+    function(erreur) { // 4 Fonction exécutée en cas d'erreur
         console.error("Erreur lors du chargement du coeur :", erreur);
     }
 );
